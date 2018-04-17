@@ -24,7 +24,7 @@ import org.w3c.dom.NodeList;
 
 import com.google.gson.JsonParser;
 
-public class Cricinfo {
+public class Cricbuzz {
 	JSONObject jobj = new JSONObject();
 	static String GET_URL;
 	static String USER_AGENT = "Mozilla/5.0";
