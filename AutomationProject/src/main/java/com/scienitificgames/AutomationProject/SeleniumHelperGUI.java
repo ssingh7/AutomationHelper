@@ -18,20 +18,23 @@ import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.border.SoftBevelBorder;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.LineBorder;
+import java.awt.Color;
+import javax.swing.border.TitledBorder;
+import javax.swing.UIManager;
+import javax.swing.border.EtchedBorder;
 
 public class SeleniumHelperGUI {
 
-	private JFrame frame;
+	private JFrame frmAutomationHelper;
 	private JButton btnStart, btnClickOperation;
-	private JTextField webLocatorTextField, codeSnipetTextField, urlTextField;
-	private JRadioButton rdbtnXpath, rdbtnId, rdbtnName, rdbtnLinktext;
+	private JTextField webLocatorTextField, urlTextField,appPackageTextField,activityNameTextField;
+	private JRadioButton rdbtnXpath, rdbtnId, rdbtnName, rdbtnLinktext,rdbtnWeb,rdbtnMobile;
 	private static SeleniumHelper seleniumHelper;
-	private JTextArea resultTextArea;
 	private ButtonGroup locatorButtonGroup, automationTypeButtonGroup;
-	private JTextField appPackageTextField;
-	private JTextField activityNameTextField;
-	private JRadioButton rdbtnWeb;
-	private JRadioButton rdbtnMobile;
+	private JTextArea codeSnippetTextArea,resultTextArea;
 
 	/**
 	 * Launch the application.
@@ -41,7 +44,7 @@ public class SeleniumHelperGUI {
 			public void run() {
 				try {
 					SeleniumHelperGUI window = new SeleniumHelperGUI();
-					window.frame.setVisible(true);
+					window.frmAutomationHelper.setVisible(true);
 					window.startButtonEvent();
 					window.clickOperationButtonEvent();
 
@@ -63,11 +66,14 @@ public class SeleniumHelperGUI {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frame = new JFrame();
-		frame.setBounds(100, 100, 982, 576);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmAutomationHelper = new JFrame();
+		frmAutomationHelper.setTitle("Automation Helper");
+		frmAutomationHelper.setBounds(100, 100, 982, 576);
+		frmAutomationHelper.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		JPanel panel2 = new JPanel();
+		panel2.setBounds(19, 121, 279, 110);
+		panel2.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		panel2.setLayout(null);
 
 		rdbtnXpath = new JRadioButton("XPath", true);
@@ -98,6 +104,8 @@ public class SeleniumHelperGUI {
 		webLocatorTextField.setColumns(10);
 
 		JPanel panel3 = new JPanel();
+		panel3.setBounds(19, 242, 198, 197);
+		panel3.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		panel3.setLayout(null);
 
 		btnClickOperation = new JButton("ClickOperation");
@@ -106,44 +114,14 @@ public class SeleniumHelperGUI {
 
 		resultTextArea = new JTextArea();
 		resultTextArea.setBounds(10, 98, 176, 88);
+		resultTextArea.setBorder(new TitledBorder(null, "Output", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		panel3.add(resultTextArea);
 		resultTextArea.setLineWrap(true);
 		resultTextArea.setWrapStyleWord(true);
 
-		codeSnipetTextField = new JTextField();
-		codeSnipetTextField.setColumns(10);
-
-		JLabel lblCodeSnipet = new JLabel("Code snipet");
-
 		JPanel panel1 = new JPanel();
-		GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
-		groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(groupLayout
-				.createSequentialGroup().addGap(19)
-				.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(panel1, GroupLayout.PREFERRED_SIZE, 713, GroupLayout.PREFERRED_SIZE)
-						.addGroup(groupLayout.createSequentialGroup()
-								.addComponent(panel2, GroupLayout.PREFERRED_SIZE, 279, GroupLayout.PREFERRED_SIZE)
-								.addGap(22)
-								.addComponent(panel3, GroupLayout.PREFERRED_SIZE, 186, GroupLayout.PREFERRED_SIZE)
-								.addGap(10)
-								.addComponent(lblCodeSnipet, GroupLayout.PREFERRED_SIZE, 78, GroupLayout.PREFERRED_SIZE)
-								.addGap(10).addComponent(codeSnipetTextField, GroupLayout.PREFERRED_SIZE, 332,
-										GroupLayout.PREFERRED_SIZE)))
-				.addGap(30)));
-		groupLayout.setVerticalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(groupLayout
-				.createSequentialGroup().addGap(6)
-				.addComponent(panel1, GroupLayout.PREFERRED_SIZE, 109, GroupLayout.PREFERRED_SIZE)
-				.addPreferredGap(ComponentPlacement.RELATED)
-				.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup()
-								.addComponent(codeSnipetTextField, GroupLayout.PREFERRED_SIZE, 386,
-										GroupLayout.PREFERRED_SIZE)
-								.addContainerGap(34, Short.MAX_VALUE))
-						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addGroup(groupLayout.createSequentialGroup().addGap(4).addComponent(lblCodeSnipet,
-										GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE))
-								.addComponent(panel2, GroupLayout.PREFERRED_SIZE, 110, GroupLayout.PREFERRED_SIZE)
-								.addComponent(panel3, GroupLayout.PREFERRED_SIZE, 197, GroupLayout.PREFERRED_SIZE)))));
+		panel1.setBounds(19, 6, 713, 109);
+		panel1.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		panel1.setLayout(null);
 		rdbtnWeb = new JRadioButton("Web", true);
 		rdbtnWeb.setBounds(10, 7, 65, 23);
@@ -153,6 +131,7 @@ public class SeleniumHelperGUI {
 		rdbtnMobile.setBounds(93, 7, 82, 23);
 		panel1.add(rdbtnMobile);
 		automationTypeButtonGroup = new ButtonGroup();
+		frmAutomationHelper.getContentPane().setLayout(null);
 		automationTypeButtonGroup.add(rdbtnWeb);
 		automationTypeButtonGroup.add(rdbtnMobile);
 
@@ -186,8 +165,15 @@ public class SeleniumHelperGUI {
 		btnStart = new JButton("Start");
 		btnStart.setBounds(614, 37, 89, 23);
 		panel1.add(btnStart);
-
-		frame.getContentPane().setLayout(groupLayout);
+		frmAutomationHelper.getContentPane().add(panel1);
+		frmAutomationHelper.getContentPane().add(panel2);
+		frmAutomationHelper.getContentPane().add(panel3);
+		
+		codeSnippetTextArea = new JTextArea();
+		codeSnippetTextArea.setBounds(600, 126, 323, 315);
+		codeSnippetTextArea.setBackground(Color.WHITE);
+		codeSnippetTextArea.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Code snippet", TitledBorder.LEFT, TitledBorder.TOP, null, new Color(0, 0, 0)));
+		frmAutomationHelper.getContentPane().add(codeSnippetTextArea);
 	}
 
 	public void startButtonEvent() {
@@ -204,7 +190,12 @@ public class SeleniumHelperGUI {
 				} else {
 					String appActivity = activityNameTextField.getText();
 					String appPackage = appPackageTextField.getText();
-					seleniumHelper = new SeleniumHelper(appPackage, appActivity);
+					if(appActivity.length()<1 ||appPackage.length()<1) {
+						
+					}else {
+						seleniumHelper = new SeleniumHelper(appPackage, appActivity);
+					}
+					
 
 				}
 

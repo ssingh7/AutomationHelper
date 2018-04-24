@@ -38,7 +38,8 @@ public class SeleniumHelper {
 			System.setProperty("webdriver.chrome.driver", "BrowserDriver/chromedriver.exe");
 			if(driver==null) {
 				driver = new ChromeDriver();
-			}		
+			}
+			System.out.println(driver);
 			break;
 		case "Android":
 			break;
