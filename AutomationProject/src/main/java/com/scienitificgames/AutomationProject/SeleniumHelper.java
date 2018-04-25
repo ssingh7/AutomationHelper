@@ -10,14 +10,16 @@ import javax.swing.JTextField;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.support.ui.Select;
 
 import io.appium.java_client.android.AndroidDriver;
 
 public class SeleniumHelper {
-	private static WebDriver driver,backupDriver;
+	private static WebDriver driver, backupDriver;
 
 	public SeleniumHelper() {
 		selectBrowser("chrome");
@@ -27,16 +29,16 @@ public class SeleniumHelper {
 		selectBrowser("chrome");
 		driver.get(url);
 	}
-	
+
 	public SeleniumHelper(String appPackage, String appActivity) {
-		setMobileDriver(appPackage,appActivity);
+		setMobileDriver(appPackage, appActivity);
 	}
 
 	public void selectBrowser(String browserName) {
 		switch (browserName) {
 		case "chrome":
 			System.setProperty("webdriver.chrome.driver", "BrowserDriver/chromedriver.exe");
-			if(driver==null) {
+			if (driver == null) {
 				driver = new ChromeDriver();
 			}
 			System.out.println(driver);
@@ -45,8 +47,8 @@ public class SeleniumHelper {
 			break;
 		}
 	}
-	
-	public void setMobileDriver(String appPackage, String appActivity ) {
+
+	public void setMobileDriver(String appPackage, String appActivity) {
 		DesiredCapabilities capabilities = new DesiredCapabilities();
 		capabilities.setCapability("deviceName", "Nexus 5X");
 		capabilities.setCapability("platformVersion", "8.1");
@@ -55,7 +57,7 @@ public class SeleniumHelper {
 		capabilities.setCapability("appActivity", appActivity);
 		capabilities.setCapability("noReset", true);
 		capabilities.setCapability("newCommandTimeout", 3600);
-		
+
 		try {
 			driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
 		} catch (MalformedURLException e) {
@@ -63,24 +65,68 @@ public class SeleniumHelper {
 		}
 	}
 
-	public String click(String locatorType,String locatorValue) {
+	public String click(String locatorType, String locatorValue) {
 		backupDriver = driver;
 		try {
-			switch(locatorType){
-			case "xpath":
-				driver.findElement(By.xpath(locatorValue)).click();;break;
-			case "id":
-				driver.findElement(By.id(locatorValue)).click();;break;
-			case "name":
-				driver.findElement(By.name(locatorValue)).click();;break;
-			case "linkText":
-				driver.findElement(By.partialLinkText(locatorValue)).click();;break;
-			}
+			getWebElement(locatorType, locatorValue).click();
 			return "Clicked Successfully";
-		}catch(Exception e) {
+		} catch (Exception e) {
 			driver = backupDriver;
 			return "Unable to Click";
 		}
+
+	}
+
+	public String sendKeys(String locatorType, String locatorValue, String sendKeysValue) {
+		backupDriver = driver;
+		try {
+			getWebElement(locatorType, locatorValue).click();
+			return "Entered Text Successfully";
+		} catch (Exception e) {
+			driver = backupDriver;
+			return "Unable to Enter Text";
+		}
+	}
+
+	public String selectOperaton(String locatorType, String locatorValue, String selectOptionValue) {
+		backupDriver = driver;
+		try {
+			Select select = new Select(getWebElement(locatorType, locatorValue));
+			select.selectByVisibleText(selectOptionValue);
+			return "Option Selected Successfully";
+		} catch (Exception e) {
+			driver = backupDriver;
+			return "Unable to select given option";
+		}
+	}
+
+	public String wait(String waitValue) {
+		backupDriver = driver;
+		try {
+			return "Clicked Successfully";
+		} catch (Exception e) {
+			driver = backupDriver;
+			return "Unable to Click";
+		}
+	}
+
+	public WebElement getWebElement(String locatorType, String locatorValue) {
+		WebElement element = null;
+		switch (locatorType) {
+		case "xpath":
+			element = driver.findElement(By.xpath(locatorValue));
+			break;
+		case "id":
+			element = driver.findElement(By.id(locatorValue));
+			break;
+		case "name":
+			element = driver.findElement(By.name(locatorValue));
+			break;
+		case "linkText":
+			element = driver.findElement(By.partialLinkText(locatorValue));
+			break;
+		}
+		return element;
 
 	}
 

@@ -29,12 +29,13 @@ import javax.swing.border.EtchedBorder;
 public class SeleniumHelperGUI {
 
 	private JFrame frmAutomationHelper;
-	private JButton btnStart, btnClickOperation;
-	private JTextField webLocatorTextField, urlTextField,appPackageTextField,activityNameTextField;
-	private JRadioButton rdbtnXpath, rdbtnId, rdbtnName, rdbtnLinktext,rdbtnWeb,rdbtnMobile;
+	private JButton btnStart, btnClickOperation, btnSendkeysoperation, selectOperationButton, waitButton;
+	private JTextField webLocatorTextField, urlTextField, appPackageTextField, activityNameTextField, sendKeysTextField,
+			selectOperationTextField, waitTextField;
+	private JRadioButton rdbtnXpath, rdbtnId, rdbtnName, rdbtnLinktext, rdbtnWeb, rdbtnMobile;
 	private static SeleniumHelper seleniumHelper;
 	private ButtonGroup locatorButtonGroup, automationTypeButtonGroup;
-	private JTextArea codeSnippetTextArea,resultTextArea;
+	private JTextArea codeSnippetTextArea, resultTextArea;
 
 	/**
 	 * Launch the application.
@@ -67,12 +68,13 @@ public class SeleniumHelperGUI {
 	 */
 	private void initialize() {
 		frmAutomationHelper = new JFrame();
+		frmAutomationHelper.setBackground(Color.LIGHT_GRAY);
 		frmAutomationHelper.setTitle("Automation Helper");
 		frmAutomationHelper.setBounds(100, 100, 982, 576);
 		frmAutomationHelper.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		JPanel panel2 = new JPanel();
-		panel2.setBounds(19, 121, 279, 110);
+		panel2.setBounds(19, 121, 279, 78);
 		panel2.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		panel2.setLayout(null);
 
@@ -104,7 +106,7 @@ public class SeleniumHelperGUI {
 		webLocatorTextField.setColumns(10);
 
 		JPanel panel3 = new JPanel();
-		panel3.setBounds(19, 242, 198, 197);
+		panel3.setBounds(19, 207, 388, 284);
 		panel3.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		panel3.setLayout(null);
 
@@ -113,7 +115,7 @@ public class SeleniumHelperGUI {
 		panel3.add(btnClickOperation);
 
 		resultTextArea = new JTextArea();
-		resultTextArea.setBounds(10, 98, 176, 88);
+		resultTextArea.setBounds(10, 159, 368, 114);
 		resultTextArea.setBorder(new TitledBorder(null, "Output", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		panel3.add(resultTextArea);
 		resultTextArea.setLineWrap(true);
@@ -168,11 +170,42 @@ public class SeleniumHelperGUI {
 		frmAutomationHelper.getContentPane().add(panel1);
 		frmAutomationHelper.getContentPane().add(panel2);
 		frmAutomationHelper.getContentPane().add(panel3);
-		
+
+		btnSendkeysoperation = new JButton("SendKeys");
+
+		btnSendkeysoperation.setBounds(10, 45, 133, 23);
+		panel3.add(btnSendkeysoperation);
+
+		selectOperationButton = new JButton("SelectOperation");
+		selectOperationButton.setBounds(10, 79, 133, 23);
+		panel3.add(selectOperationButton);
+
+		sendKeysTextField = new JTextField();
+		sendKeysTextField.setBounds(151, 46, 133, 22);
+		panel3.add(sendKeysTextField);
+		sendKeysTextField.setColumns(10);
+
+		selectOperationTextField = new JTextField();
+
+		selectOperationTextField.setBounds(153, 80, 131, 20);
+		panel3.add(selectOperationTextField);
+		selectOperationTextField.setColumns(10);
+
+		waitButton = new JButton("Wait");
+
+		waitButton.setBounds(10, 113, 133, 23);
+		panel3.add(waitButton);
+
+		waitTextField = new JTextField();
+		waitTextField.setBounds(151, 114, 133, 22);
+		panel3.add(waitTextField);
+		waitTextField.setColumns(10);
+
 		codeSnippetTextArea = new JTextArea();
 		codeSnippetTextArea.setBounds(600, 126, 323, 315);
 		codeSnippetTextArea.setBackground(Color.WHITE);
-		codeSnippetTextArea.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Code snippet", TitledBorder.LEFT, TitledBorder.TOP, null, new Color(0, 0, 0)));
+		codeSnippetTextArea.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Code snippet",
+				TitledBorder.LEFT, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		frmAutomationHelper.getContentPane().add(codeSnippetTextArea);
 	}
 
@@ -190,12 +223,11 @@ public class SeleniumHelperGUI {
 				} else {
 					String appActivity = activityNameTextField.getText();
 					String appPackage = appPackageTextField.getText();
-					if(appActivity.length()<1 ||appPackage.length()<1) {
-						
-					}else {
+					if (appActivity.length() < 1 || appPackage.length() < 1) {
+
+					} else {
 						seleniumHelper = new SeleniumHelper(appPackage, appActivity);
 					}
-					
 
 				}
 
@@ -208,20 +240,58 @@ public class SeleniumHelperGUI {
 
 			public void actionPerformed(ActionEvent e) {
 				String locatorValue = webLocatorTextField.getText();
-				String locatorType = "";
-				if (rdbtnXpath.isSelected()) {
-					locatorType = "xpath";
-				} else if (rdbtnId.isSelected()) {
-					locatorType = "id";
-				} else if (rdbtnName.isSelected()) {
-					locatorType = "name";
-				} else if (rdbtnLinktext.isSelected()) {
-					locatorType = "linkText";
-				}
-
+				String locatorType = getLocatorType();
 				String message = seleniumHelper.click(locatorType, locatorValue);
 				resultTextArea.append(message + "\n");
 			}
 		});
+	}
+
+	public void sendKeysButtonEvent() {
+		btnSendkeysoperation.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String locatorValue = webLocatorTextField.getText();
+				String locatorType = getLocatorType();
+				String sendKeysValue = sendKeysTextField.getText();
+				String message = seleniumHelper.sendKeys(locatorType, locatorValue, sendKeysValue);
+				resultTextArea.append(message + "\n");
+			}
+		});
+	}
+
+	public void selectOperationButtonEvent() {
+		selectOperationTextField.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String locatorValue = webLocatorTextField.getText();
+				String locatorType = getLocatorType();
+				String selectOptionValue = selectOperationTextField.getText();
+				String message = seleniumHelper.selectOperaton(locatorType, locatorValue, selectOptionValue);
+				resultTextArea.append(message + "\n");
+			}
+		});
+	}
+
+	public void waitButtonEvent() {
+		waitButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String waitValue = waitTextField.getText();
+				String message = seleniumHelper.wait(waitValue);
+				resultTextArea.append(message + "\n");
+			}
+		});
+	}
+
+	public String getLocatorType() {
+		String locatorType = "";
+		if (rdbtnXpath.isSelected()) {
+			locatorType = "xpath";
+		} else if (rdbtnId.isSelected()) {
+			locatorType = "id";
+		} else if (rdbtnName.isSelected()) {
+			locatorType = "name";
+		} else if (rdbtnLinktext.isSelected()) {
+			locatorType = "linkText";
+		}
+		return locatorType;
 	}
 }
