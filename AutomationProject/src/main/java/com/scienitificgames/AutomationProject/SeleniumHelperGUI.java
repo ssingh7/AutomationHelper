@@ -3,24 +3,17 @@ package com.scienitificgames.AutomationProject;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JTextField;
-import java.awt.BorderLayout;
-import java.awt.Component;
-import javax.swing.JTextPane;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.ButtonGroup;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.border.SoftBevelBorder;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.LineBorder;
 import java.awt.Color;
 import javax.swing.border.TitledBorder;
 import javax.swing.UIManager;
@@ -29,13 +22,15 @@ import javax.swing.border.EtchedBorder;
 public class SeleniumHelperGUI {
 
 	private JFrame frmAutomationHelper;
-	private JButton btnStart, btnClickOperation, btnSendkeysoperation, selectOperationButton, waitButton;
+	private JButton btnStart, btnClickOperation, btnSendkeysoperation, selectOperationButton, waitButton, btnHighlight,btnReset,
+			btnRun, btnStop;
 	private JTextField webLocatorTextField, urlTextField, appPackageTextField, activityNameTextField, sendKeysTextField,
 			selectOperationTextField, waitTextField;
-	private JRadioButton rdbtnXpath, rdbtnId, rdbtnName, rdbtnLinktext, rdbtnWeb, rdbtnMobile;
+	private JRadioButton rdbtnXpath, rdbtnId, rdbtnName, rdbtnLinktext, rdbtnWeb, rdbtnMobile, rdbtnRecordingOn;
 	private static SeleniumHelper seleniumHelper;
 	private ButtonGroup locatorButtonGroup, automationTypeButtonGroup;
 	private JTextArea codeSnippetTextArea, resultTextArea;
+	private static ArrayList<String> executionSteps;
 
 	/**
 	 * Launch the application.
@@ -47,7 +42,14 @@ public class SeleniumHelperGUI {
 					SeleniumHelperGUI window = new SeleniumHelperGUI();
 					window.frmAutomationHelper.setVisible(true);
 					window.startButtonEvent();
+					window.stopButtonEvent();
 					window.clickOperationButtonEvent();
+					window.sendKeysButtonEvent();
+					window.highlightEvent();
+					window.selectOperationButtonEvent();
+					window.waitButtonEvent();
+					window.runButtonEvent();
+					window.resetButtonEvent();
 
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -60,6 +62,7 @@ public class SeleniumHelperGUI {
 	 * Create the application.
 	 */
 	public SeleniumHelperGUI() {
+		executionSteps = new ArrayList<String>();
 		initialize();
 	}
 
@@ -68,6 +71,7 @@ public class SeleniumHelperGUI {
 	 */
 	private void initialize() {
 		frmAutomationHelper = new JFrame();
+		frmAutomationHelper.setAlwaysOnTop(true);
 		frmAutomationHelper.setBackground(Color.LIGHT_GRAY);
 		frmAutomationHelper.setTitle("Automation Helper");
 		frmAutomationHelper.setBounds(100, 100, 982, 576);
@@ -125,7 +129,7 @@ public class SeleniumHelperGUI {
 		panel1.setBounds(19, 6, 713, 109);
 		panel1.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		panel1.setLayout(null);
-		rdbtnWeb = new JRadioButton("Web", true);
+		rdbtnWeb = new JRadioButton("Web");
 		rdbtnWeb.setBounds(10, 7, 65, 23);
 		panel1.add(rdbtnWeb);
 
@@ -168,6 +172,10 @@ public class SeleniumHelperGUI {
 		btnStart.setBounds(614, 37, 89, 23);
 		panel1.add(btnStart);
 		frmAutomationHelper.getContentPane().add(panel1);
+
+		btnStop = new JButton("Stop");
+		btnStop.setBounds(614, 69, 89, 23);
+		panel1.add(btnStop);
 		frmAutomationHelper.getContentPane().add(panel2);
 		frmAutomationHelper.getContentPane().add(panel3);
 
@@ -201,12 +209,35 @@ public class SeleniumHelperGUI {
 		panel3.add(waitTextField);
 		waitTextField.setColumns(10);
 
+		btnHighlight = new JButton("Highlight");
+
+		btnHighlight.setBounds(153, 11, 89, 23);
+		panel3.add(btnHighlight);
+
+		JPanel panel = new JPanel();
+		panel.setBounds(468, 126, 438, 365);
+		frmAutomationHelper.getContentPane().add(panel);
+		panel.setLayout(null);
+
 		codeSnippetTextArea = new JTextArea();
-		codeSnippetTextArea.setBounds(600, 126, 323, 315);
+		codeSnippetTextArea.setBounds(10, 56, 328, 298);
+		panel.add(codeSnippetTextArea);
 		codeSnippetTextArea.setBackground(Color.WHITE);
 		codeSnippetTextArea.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Code snippet",
 				TitledBorder.LEFT, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		frmAutomationHelper.getContentPane().add(codeSnippetTextArea);
+
+		rdbtnRecordingOn = new JRadioButton("Recording On");
+		rdbtnRecordingOn.setBounds(6, 7, 109, 23);
+		panel.add(rdbtnRecordingOn);
+
+		btnRun = new JButton("Run");
+		btnRun.setBounds(121, 7, 89, 23);
+		panel.add(btnRun);
+		
+		btnReset = new JButton("Reset");
+
+		btnReset.setBounds(220, 7, 89, 23);
+		panel.add(btnReset);
 	}
 
 	public void startButtonEvent() {
@@ -235,6 +266,15 @@ public class SeleniumHelperGUI {
 		});
 	}
 
+	public void stopButtonEvent() {
+		btnStop.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				seleniumHelper.close();
+			}
+		});
+	}
+
 	public void clickOperationButtonEvent() {
 		btnClickOperation.addActionListener(new ActionListener() {
 
@@ -242,6 +282,11 @@ public class SeleniumHelperGUI {
 				String locatorValue = webLocatorTextField.getText();
 				String locatorType = getLocatorType();
 				String message = seleniumHelper.click(locatorType, locatorValue);
+				if (rdbtnRecordingOn.isSelected()) {
+					String step = "clickOperation:" + locatorType + ":" + locatorValue;
+					executionSteps.add(step);
+					codeSnippetTextArea.append(step.replace(":", " : ") + "\n");
+				}
 				resultTextArea.append(message + "\n");
 			}
 		});
@@ -254,6 +299,11 @@ public class SeleniumHelperGUI {
 				String locatorType = getLocatorType();
 				String sendKeysValue = sendKeysTextField.getText();
 				String message = seleniumHelper.sendKeys(locatorType, locatorValue, sendKeysValue);
+				if (rdbtnRecordingOn.isSelected()) {
+					String step = "sendKeys:" + locatorType + ":" + locatorValue + ":" + sendKeysValue;
+					executionSteps.add(step);
+					codeSnippetTextArea.append(step.replace(":", " : ") + "\n");
+				}
 				resultTextArea.append(message + "\n");
 			}
 		});
@@ -265,7 +315,12 @@ public class SeleniumHelperGUI {
 				String locatorValue = webLocatorTextField.getText();
 				String locatorType = getLocatorType();
 				String selectOptionValue = selectOperationTextField.getText();
-				String message = seleniumHelper.selectOperaton(locatorType, locatorValue, selectOptionValue);
+				String message = seleniumHelper.selectOperation(locatorType, locatorValue, selectOptionValue);
+				if (rdbtnRecordingOn.isSelected()) {
+					String step = "selectOperation:" + locatorType + ":" + locatorValue + ":" + selectOptionValue;
+					executionSteps.add(step);
+					codeSnippetTextArea.append(step.replace(":", " : ") + "\n");
+				}
 				resultTextArea.append(message + "\n");
 			}
 		});
@@ -277,6 +332,34 @@ public class SeleniumHelperGUI {
 				String waitValue = waitTextField.getText();
 				String message = seleniumHelper.wait(waitValue);
 				resultTextArea.append(message + "\n");
+			}
+		});
+	}
+
+	public void highlightEvent() {
+		btnHighlight.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				String locatorValue = webLocatorTextField.getText();
+				String locatorType = getLocatorType();
+				String message = seleniumHelper.highlight(locatorType, locatorValue);
+				resultTextArea.append(message + "\n");
+			}
+		});
+	}
+
+	public void runButtonEvent() {
+		btnRun.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				seleniumHelper.perfromMultipleSteps(executionSteps);
+			}
+		});
+	}
+	
+	public void resetButtonEvent() {
+		btnReset.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				codeSnippetTextArea.setText(null);
+				executionSteps.clear();
 			}
 		});
 	}
