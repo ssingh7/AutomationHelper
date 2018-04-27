@@ -4,8 +4,6 @@ import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.List;
-
 import javax.swing.JFrame;
 import javax.swing.JTextField;
 import javax.swing.JButton;
@@ -18,6 +16,7 @@ import java.awt.Color;
 import javax.swing.border.TitledBorder;
 import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
+import javax.swing.JComboBox;
 
 public class SeleniumHelperGUI {
 
@@ -30,6 +29,7 @@ public class SeleniumHelperGUI {
 	private static SeleniumHelper seleniumHelper;
 	private ButtonGroup locatorButtonGroup, automationTypeButtonGroup;
 	private JTextArea codeSnippetTextArea, resultTextArea;
+	private JComboBox browserComboBox;
 	private static ArrayList<String> executionSteps;
 
 	/**
@@ -110,7 +110,7 @@ public class SeleniumHelperGUI {
 		webLocatorTextField.setColumns(10);
 
 		JPanel panel3 = new JPanel();
-		panel3.setBounds(19, 207, 388, 284);
+		panel3.setBounds(19, 207, 494, 284);
 		panel3.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		panel3.setLayout(null);
 
@@ -119,7 +119,7 @@ public class SeleniumHelperGUI {
 		panel3.add(btnClickOperation);
 
 		resultTextArea = new JTextArea();
-		resultTextArea.setBounds(10, 159, 368, 114);
+		resultTextArea.setBounds(294, 11, 195, 125);
 		resultTextArea.setBorder(new TitledBorder(null, "Output", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		panel3.add(resultTextArea);
 		resultTextArea.setLineWrap(true);
@@ -134,7 +134,7 @@ public class SeleniumHelperGUI {
 		panel1.add(rdbtnWeb);
 
 		rdbtnMobile = new JRadioButton("Mobile");
-		rdbtnMobile.setBounds(93, 7, 82, 23);
+		rdbtnMobile.setBounds(210, 7, 82, 23);
 		panel1.add(rdbtnMobile);
 		automationTypeButtonGroup = new ButtonGroup();
 		frmAutomationHelper.getContentPane().setLayout(null);
@@ -176,6 +176,16 @@ public class SeleniumHelperGUI {
 		btnStop = new JButton("Stop");
 		btnStop.setBounds(614, 69, 89, 23);
 		panel1.add(btnStop);
+		
+		browserComboBox = new JComboBox();
+		browserComboBox.setBounds(81, 8, 81, 20);
+		browserComboBox.addItem("Chrome");
+		browserComboBox.addItem("IE");
+		browserComboBox.addItem("Firefox");
+		panel1.add(browserComboBox);
+		browserComboBox.setAutoscrolls(true);
+
+		
 		frmAutomationHelper.getContentPane().add(panel2);
 		frmAutomationHelper.getContentPane().add(panel3);
 
@@ -215,7 +225,7 @@ public class SeleniumHelperGUI {
 		panel3.add(btnHighlight);
 
 		JPanel panel = new JPanel();
-		panel.setBounds(468, 126, 438, 365);
+		panel.setBounds(518, 126, 438, 365);
 		frmAutomationHelper.getContentPane().add(panel);
 		panel.setLayout(null);
 
@@ -244,12 +254,13 @@ public class SeleniumHelperGUI {
 		btnStart.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
+				Object browser = browserComboBox.getSelectedItem();
 				if (rdbtnWeb.isSelected()) {
 					String url = urlTextField.getText();
 					if (url != null && url.length() > 1) {
-						seleniumHelper = new SeleniumHelper(url);
+						seleniumHelper = new SeleniumHelper(browser,url);
 					} else {
-						seleniumHelper = new SeleniumHelper();
+						seleniumHelper = new SeleniumHelper(browser);
 					}
 				} else {
 					String appActivity = activityNameTextField.getText();

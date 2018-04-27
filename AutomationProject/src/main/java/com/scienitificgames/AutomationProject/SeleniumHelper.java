@@ -18,6 +18,8 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.Select;
@@ -27,12 +29,12 @@ import io.appium.java_client.android.AndroidDriver;
 public class SeleniumHelper {
 	private static WebDriver driver, backupDriver;
 
-	public SeleniumHelper() {
-		selectBrowser("chrome");
+	public SeleniumHelper(Object browser) {
+		selectBrowser(browser.toString());
 	}
 
-	public SeleniumHelper(String url) {
-		selectBrowser("chrome");
+	public SeleniumHelper(Object browser,String url) {
+		selectBrowser(browser.toString());
 		driver.get(url);
 	}
 
@@ -41,11 +43,25 @@ public class SeleniumHelper {
 	}
 
 	public void selectBrowser(String browserName) {
-		switch (browserName) {
+		switch (browserName.toLowerCase()) {
 		case "chrome":
 			System.setProperty("webdriver.chrome.driver", "BrowserDriver/chromedriver.exe");
 			if (driver == null || driver.toString().contains("null")) {
 				driver = new ChromeDriver();
+			}
+			System.out.println(driver);
+			break;
+		case "ie":
+			System.setProperty("webdriver.ie.driver", "BrowserDriver/IEDriverServer.exe");
+			if (driver == null || driver.toString().contains("null")) {
+				driver = new InternetExplorerDriver();
+			}
+			System.out.println(driver);
+			break;
+		case "firefox":
+			System.setProperty("webdriver.gecko.driver", "BrowserDriver/geckodriver.exe");
+			if (driver == null || driver.toString().contains("null")) {
+				driver = new FirefoxDriver();
 			}
 			System.out.println(driver);
 			break;
